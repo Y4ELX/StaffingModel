@@ -65,48 +65,49 @@ class Tactic:
             Tactic.FTE_overdemand = overdemand
         
         return {
-            "Daily Income Work": self.daily_income_work,
-            "Backlog": self.backlog,
-            "Recovery Time": self.recovery_time,
-            "Time to hire (days)": self.time_to_hire,
-            "Cost to hire": self.cost_to_hire,
-            "Set up time (days)": self.set_up_time,
-            "Cost to set up": self.cost_to_set_up,
-            "Training time (days)": self.training_time,
-            "No of trainers": self.no_of_trainers,
-            "Daily cost per trainer": self.daily_cost_per_trainer,
-            "No of trainees per session": self.no_of_trainees_per_session,
-            "Training cost/Individual": training_cost_per_individual,
-            "Total Onboarding cost/employee": total_onboarding_cost_per_employee,
-            "Start up time (days)": startup_time_days,
-            "Throughput/day (Initial)": self.throughput_initial,
-            "Throughput/day (Final)": self.throughput_final,
-            "Time to 100% Productivity (days)": self.time_to_100_productivity,
-            "Daily Productivity Increase": daily_productivity_increase,
-            "Final Daily Throughput": final_daily_throughput,
-            "Average Daily Throughput": average_daily_throughput,
-            "Initial Quality": self.initial_quality,
-            "Final Quality": self.final_quality,
-            "Time to 100% Quality (days)": self.time_to_100_quality,
-            "Daily Quality Increase": daily_quality_increase,
-            "Final Daily Quality": final_daily_quality,
-            "Average Daily Quality": average_daily_quality,
-            "Max No. Employees": self.max_no_employees,
-            "Absentism Rate": self.absentism_rate,
-            "Amount of Needed Employees": amount_of_needed_employees,
-            "Throughput": throughput,
-            "Employee": self.employee_cost,
-            "Daily Supervision Cost": self.daily_supervision_cost,
-            "Contract Cost": self.contract_cost,
-            "Oversight Cost": oversight_cost,
-            "Total Daily Cost/Employee": total_daily_cost_per_employee,
-            "OVER DEMAND": overdemand,
-            "REDUCTION ON BACKLOG": reduction_on_backlog,
-            "BACKLOG": backlog,
-            "PROCESSED TRANSACTIONS": processed_transactions,
-            "TOTAL COST": total_cost,
-            "UNIT COST": unit_cost,
+            "daily_income_work": self.daily_income_work,
+            "backlog": self.backlog,
+            "recovery_time": self.recovery_time,
+            "time_to_hire_days": self.time_to_hire,
+            "cost_to_hire": self.cost_to_hire,
+            "set_up_time_days": self.set_up_time,
+            "cost_to_set_up": self.cost_to_set_up,
+            "training_time_days": self.training_time,
+            "no_of_trainers": self.no_of_trainers,
+            "daily_cost_per_trainer": self.daily_cost_per_trainer,
+            "no_of_trainees_per_session": self.no_of_trainees_per_session,
+            "training_cost_individual": training_cost_per_individual,
+            "total_onboarding_cost_per_employee": total_onboarding_cost_per_employee,
+            "startup_time_days": startup_time_days,
+            "throughput_day_initial": self.throughput_initial,
+            "throughput_day_final": self.throughput_final,
+            "time_to_100_productivity_days": self.time_to_100_productivity,
+            "daily_productivity_increase": daily_productivity_increase,
+            "final_daily_throughput": final_daily_throughput,
+            "average_daily_throughput": average_daily_throughput,
+            "initial_quality": self.initial_quality,
+            "final_quality": self.final_quality,
+            "time_to_100_quality_days": self.time_to_100_quality,
+            "daily_quality_increase": daily_quality_increase,
+            "final_daily_quality": final_daily_quality,
+            "average_daily_quality": average_daily_quality,
+            "max_no_employees": self.max_no_employees,
+            "absentism_rate": self.absentism_rate,
+            "amount_of_needed_employees": amount_of_needed_employees,
+            "throughput": throughput,
+            "employee_cost": self.employee_cost,
+            "daily_supervision_cost": self.daily_supervision_cost,
+            "contract_cost": self.contract_cost,
+            "oversight_cost": oversight_cost,
+            "total_daily_cost_per_employee": total_daily_cost_per_employee,
+            "over_demand": overdemand,
+            "reduction_on_backlog": reduction_on_backlog,
+            "backlog": backlog,
+            "processed_transactions": processed_transactions,
+            "total_cost": total_cost,
+            "unit_cost": unit_cost,
         }
+
 
 
 # Configuración de las tácticas
@@ -141,7 +142,7 @@ for tactic in tactics:
     for tactic.recovery_time in range(1, tactic.recovery_time_final + 1):
         result = tactic.calculate_tactics_data()
         tactic_data[tactic.recovery_time] = result
-        total_cost += result["TOTAL COST"]
+        total_cost += result["total_cost"]
     
     data["detail"][tactic.name] = tactic_data
 
@@ -152,14 +153,14 @@ for i in range(1, tactics[0].recovery_time_final + 1):
     
     # Calcular total transactions y total cost para todas las tácticas seleccionadas
     total_transactions_day = total_transactions_FTE  # FTE es el único que determina total transactions
-    total_cost_day = sum(tactic_data.get(i, {}).get("TOTAL COST", 0) for tactic_data in data["detail"].values())
+    total_cost_day = sum(tactic_data.get(i, {}).get("total_cost", 0) for tactic_data in data["detail"].values())
     total_unit_cost_day = total_cost_day / total_transactions_day if total_transactions_day > 0 else 0
 
     # Añadir al resumen con la estructura solicitada
     data["summary"][str(i)] = {
-        "Total Transactions summ": total_transactions_day,
-        "Total cost summ": total_cost_day,
-        "Total unit cost summ": total_unit_cost_day
+        "tota_transactions_summ": total_transactions_day,
+        "total_cost_summ": total_cost_day,
+        "total_unit_cost summ": total_unit_cost_day
     }
 
 # Guardar el archivo JSON
