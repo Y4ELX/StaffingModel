@@ -159,7 +159,7 @@ for i in range(1, tactics[0].recovery_time_final + 1):
     # Añadir al resumen con la estructura solicitada
     data["summary"][str(i)] = {
         "tota_transactions_summ": total_transactions_day,
-        "total_cost_summ": total_cost_day,
+        # "total_cost_summ": total_cost_day,
         "total_unit_cost summ": total_unit_cost_day
     }
 
