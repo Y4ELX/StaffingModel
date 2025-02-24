@@ -129,7 +129,7 @@ tactics = [Tactic(name, configurations.get(name, {})) for name in ["FTE", "OT", 
 data = {"backlog": tactics[0].backlog, "Daily": tactics[0].daily_income_work, "summary": {}, "detail": {}}
 
 # Definir las tácticas que queremos sumar
-selected_tactics = ["FTE", "CT1", "CT2", "RP1", "RP2", "OT"]
+selected_tactics = ["FTE", "OT" "CT1", "CT2", "CT3", "CT4", "Temps", "RP1", "RP2"]
 
 # Variables para acumular el costo total
 total_cost = 0
