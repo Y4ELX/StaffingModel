@@ -65,50 +65,12 @@ def calculate_tactics_data(tactic, fte_overdemand):
         unit_cost = Decimal(total_cost / processed_transactions).quantize(Decimal('0.01')) if processed_transactions > 0 else 0
         
     return {
-        "time_to_hire": tactic["time_to_hire"],
-        "cost_to_hire": tactic["cost_to_hire"],
-        "set_up_time": tactic["set_up_time"],
-        "cost_to_set_up": tactic["cost_to_set_up"],
-        "training_time": tactic["training_time"],
-        "no_of_trainers": tactic["no_of_trainers"],
-        "daily_cost_per_trainer": tactic["daily_cost_per_trainer"],
-        "no_of_trainees_per_session": tactic["no_of_trainees_per_session"],
-        "training_cost_per_individual": round(training_cost_per_individual, 2),
-        "total_onboarding_cost_per_employee": round(total_onboarding_cost_per_employee, 2),
-        "startup_time_days": startup_time_days,
-        
-        "throughput_initial": tactic["throughput_initial"],
-        "throughput_final": tactic["throughput_final"],
-        "time_to_100_productivity": tactic["time_to_100_productivity"],
-        "daily_productivity_increase": round(daily_productivity_increase, 2),
-        "final_daily_throughput": round(final_daily_throughput, 2),
-        "average_daily_throughput": round(average_daily_throughput, 2),
-        
-        "initial_quality": tactic["initial_quality"],
-        "final_quality": tactic["final_quality"],
-        "time_to_100_quality": tactic["time_to_100_quality"],
-        "daily_quality_increase": round(daily_quality_increase),
-        "final_daily_quality": round(final_daily_quality, 2),
-        "average_daily_quality": round(average_daily_quality),
-        
-        "max_no_employees": tactic["max_no_employees"],
-        "absentism_rate": tactic["absentism_rate"],
-        "amount_of_needed_employees": amount_of_needed_employees,
-        "throughput": throughput,
-        
-        "employee_cost": tactic["employee_cost"],
-        "daily_supervision_cost": tactic["daily_supervision_cost"],
-        "contract_cost": tactic["contract_cost"],
-        "oversight_cost": round(oversight_cost, 2),
-        "total_daily_cost_per_employee": round(total_daily_cost_per_employee, 2),
-        
+        "daily_income_work": tactic["daily_income_work"],
         "over_demand": overdemand,
-        "reduction_on_backlog": reduction_on_backlog,
         "backlog": backlog,
-        
         "processed_transactions": processed_transactions,
-        "total_cost": round(total_cost, 2),
-        "unit_cost": unit_cost
+        "total_cost": total_cost,
+        "unit_cost": unit_cost,
     }
 
 
@@ -211,7 +173,12 @@ for i in range(1, tactics[0]["recovery_time_final"] + 1):
     total_transactions_FTE = (tactics[0]["daily_income_work"] * i) + tactics[0]["backlog"]
     total_cost_day = sum(tactic_data.get(i, {}).get("total_cost", 0) for tactic_data in data["detail"].values())
     total_unit_cost_day = total_cost_day / total_transactions_FTE if total_transactions_FTE > 0 else 0
-    data["summary"][str(i)] = {"total_transactions_summ": total_transactions_FTE, "total_cost_summ": total_cost_day, "total_unit_cost_summ": total_unit_cost_day}
+    data["summary"][str(i)] = 
+    {
+            "total_transactions_summ": total_transactions_FTE,
+            "total_cost_summ": total_cost_day,
+            "total_unit_cost_summ": total_unit_cost_day
+        }
 
 with open("tactics_results.json", "w") as f:
     json.dump(data, f, indent=4, default=decimal_to_float)
