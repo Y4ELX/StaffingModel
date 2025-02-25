@@ -176,8 +176,8 @@ for i in range(1, tactics[0]["recovery_time_final"] + 1):
     data["summary"][str(i)] = 
     {
             "total_transactions_summ": total_transactions_FTE,
-            "total_cost_summ": total_cost_day,
-            "total_unit_cost_summ": total_unit_cost_day
+            # "total_cost_summ": total_cost_day, # PENDIENTE
+            # "total_unit_cost_summ": total_unit_cost_day # PENDIENTE
         }
 
 with open("tactics_results.json", "w") as f:
