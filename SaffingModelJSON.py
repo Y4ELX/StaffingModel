@@ -64,7 +64,7 @@ def calculate_tactics_data(tactic, fte_overdemand, fte_backlog):
     with localcontext() as ctx:
         ctx.rounding = ROUND_HALF_UP
         unit_cost = Decimal(total_cost / processed_transactions).quantize(Decimal('0.01')) if processed_transactions > 0 else 0
-        
+      
     return {
         "daily_income_work": tactic["daily_income_work"],
         "over_demand": overdemand,
@@ -168,18 +168,50 @@ data = {"backlog": tactics[0]["backlog"], "Daily": tactics[0]["daily_income_work
 fte_overdemand = 0
 fte_backlog = 0
 total_cost = 0
+tacticProcTr = [0] * len(tactics)
+tacticTotal = [0] * len(tactics)
+tacticUnit = [0] * len(tactics)
 
-for tactic in tactics:
+for i, tactic in enumerate(tactics):
     tactic_data = {}
+    total_cost = 0
+
     for t in range(1, tactic["recovery_time_final"] + 1):
         tactic["recovery_time"] = t
         result = calculate_tactics_data(tactic, fte_overdemand, fte_backlog)
         tactic_data[t] = result
         total_cost += result["total_cost"]
+
         if tactic["name"] == "FTE" and t == tactic["recovery_time_final"]:
             fte_overdemand = result["over_demand"]
             fte_backlog = result["backlog"]
+
+    tacticProcTr[i] = result["processed_transactions"]
+    tacticTotal[i] = result["total_cost"]
+    tacticUnit[i] = result["unit_cost"]
+    
+    # print(f"Total Cost of {tactic['name']}: {tacticTotal[i]}")
+    # print(f"Unit Cost of {tactic['name']}: {tacticUnit[i]}")
+    
     data["detail"][tactic["name"]] = tactic_data
+
+minUnitCostIndex = 0
+
+tacticTotalSummary = [0] * 8
+# Calcular Total Tactica 1 Summary (FTE)
+tacticTotalSummary[0] = tacticTotal[0]
+
+# Calcular Total Tactica 2 Summary (Min Unit Cost Tactic)
+filtered_units = [cost for cost in tacticUnit[1:] if cost > 0]
+if filtered_units:
+    minUnitCost = min(filtered_units)  
+    minUnitCostIndex = tacticUnit.index(minUnitCost)  
+    tacticTotalSummary[1] = tacticTotal[minUnitCostIndex]
+else:
+    minUnitCostIndex = -1
+ 
+# Calcular Total Tactica 3 Summary
+# Volver a calcualar calculated_tactics_data pero todas las tacticas tendran el daily incoming work del tactic[minUnitCostIndex] y guardar todos los datos del result en un arreglo llamado tacticsResultsSumm2
 
 for i in range(1, tactics[0]["recovery_time_final"] + 1):
     total_transactions_FTE = (tactics[0]["daily_income_work"] * i) + tactics[0]["backlog"]
