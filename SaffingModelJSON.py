@@ -19,9 +19,10 @@ def create_tactic(name, config):
     }
 
 
-def calculate_tactics_data(tactic, fte_overdemand):
+def calculate_tactics_data(tactic, fte_overdemand, fte_backlog):
     if tactic["name"] != "FTE":
         tactic["daily_income_work"] = fte_overdemand
+        tactic["backlog"] = fte_backlog
     
     startup_time_days = tactic["time_to_hire"] + tactic["set_up_time"] + tactic["training_time"]
     daily_productivity_increase = (tactic["throughput_final"] - tactic["throughput_initial"]) / tactic["time_to_100_productivity"]
@@ -120,6 +121,15 @@ configurations = {
         "time_to_100_quality": 1, "max_no_employees": 5, "absentism_rate": 5, 
         "employee_cost": 130, "daily_supervision_cost": 16, "contract_cost": 0
     },
+    "CT4": {
+        "daily_income_work": 0, "backlog": 0, "recovery_time": 1, "recovery_time_final": 100,
+        "time_to_hire": 5, "cost_to_hire": 0, "set_up_time": 0, "cost_to_set_up": 0, 
+        "training_time": 0, "no_of_trainers": 0, "daily_cost_per_trainer": 0, 
+        "no_of_trainees_per_session": 10, "throughput_initial": 69, "throughput_final": 69, 
+        "time_to_100_productivity": 1, "initial_quality": 100, "final_quality": 100, 
+        "time_to_100_quality": 1, "max_no_employees": 5, "absentism_rate": 5, 
+        "employee_cost": 130, "daily_supervision_cost": 16, "contract_cost": 0
+    },
     "Temps": {
         "daily_income_work": 0, "backlog": 0, "recovery_time": 1, "recovery_time_final": 100,
         "time_to_hire": 5, "cost_to_hire": 0, "set_up_time": 10, "cost_to_set_up": 0, 
@@ -156,28 +166,29 @@ tactics = [create_tactic(name, configurations[name]) for name in selected_tactic
 
 data = {"backlog": tactics[0]["backlog"], "Daily": tactics[0]["daily_income_work"], "summary": {}, "detail": {}}
 fte_overdemand = 0
+fte_backlog = 0
 total_cost = 0
 
 for tactic in tactics:
     tactic_data = {}
     for t in range(1, tactic["recovery_time_final"] + 1):
         tactic["recovery_time"] = t
-        result = calculate_tactics_data(tactic, fte_overdemand)
+        result = calculate_tactics_data(tactic, fte_overdemand, fte_backlog)
         tactic_data[t] = result
         total_cost += result["total_cost"]
         if tactic["name"] == "FTE" and t == tactic["recovery_time_final"]:
             fte_overdemand = result["over_demand"]
+            fte_backlog = result["backlog"]
     data["detail"][tactic["name"]] = tactic_data
 
 for i in range(1, tactics[0]["recovery_time_final"] + 1):
     total_transactions_FTE = (tactics[0]["daily_income_work"] * i) + tactics[0]["backlog"]
     total_cost_day = sum(tactic_data.get(i, {}).get("total_cost", 0) for tactic_data in data["detail"].values())
     total_unit_cost_day = total_cost_day / total_transactions_FTE if total_transactions_FTE > 0 else 0
-    data["summary"][str(i)] = 
-    {
+    data["summary"][str(i)] = {
             "total_transactions_summ": total_transactions_FTE,
-            # "total_cost_summ": total_cost_day, # PENDIENTE
-            # "total_unit_cost_summ": total_unit_cost_day # PENDIENTE
+            "total_cost_summ": total_cost_day,  # Pendiente
+            "total_unit_cost_summ": total_unit_cost_day  # Pendiente
         }
 
 with open("tactics_results.json", "w") as f:
