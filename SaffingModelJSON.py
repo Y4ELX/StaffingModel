@@ -195,8 +195,14 @@ for i, tactic in enumerate(tactics):
     
     data["detail"][tactic["name"]] = tactic_data
 
-minUnitCostIndex = 0
+# Calcular la suma total de los costos de todas las tácticas
+total_cost_all_tactics = sum(tacticTotal)
+for i in range(8): ## UNIT MAL IMPRESO
+    print(f"Total de la tactica: {tacticUnit[i]}")
 
+print(f"Total de los costos de todas las tácticas: {total_cost_all_tactics/100}")
+
+minUnitCostIndex = 0
 tacticTotalSummary = [0] * 8
 # Calcular Total Tactica 1 Summary (FTE)
 tacticTotalSummary[0] = tacticTotal[0]
