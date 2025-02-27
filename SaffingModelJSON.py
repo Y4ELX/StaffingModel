@@ -178,6 +178,7 @@ tacticTotalPT = [[0 for _ in range(max_recovery_days)] for _ in range(num_tactic
 tacticBacklog = [[0 for _ in range(max_recovery_days)] for _ in range(num_tactics)]
 totalPerRecovery = [0] * max_recovery_days
 minUnitCostIndex = 0
+conclusions = [[0 for _ in range(max_recovery_days)] for _ in range(num_tactics)]
 
 for i, tactic in enumerate(tactics):
     tactic_data = {}
@@ -223,18 +224,17 @@ for i in range(9):
         if j == 6:
             print(f"Total fsdfsdfd of {tactics[i]['name']} in day {j + 1}: {tacticTotalPT[i][j]}")
         
-ignored_tactics = [0]
+ignored_tactics = []
         
 for i in range(max_recovery_days):  # Iterar sobre los días de recuperación
-    if i == 7:
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-      
+          
     for j in range(9):  # Iterar sobre las tácticas
         if j not in ignored_tactics and tacticUnitPT[j][i] > 0:  # Verificar si la táctica no está ignorada y tiene un costo unitario positivo
-            if tacticBacklog[j][i] > 0:
-                totalPerRecovery[i] += tacticTotalPT[j][i]
-    totalPerRecovery[i] += tacticTotalPT[0][i]
-    ignored_tactics = [0]
+            if j == 0:
+                if tacticBacklog[j][i] > : #pendienteeeeAAAAAAAAAAAAAAA
+            totalPerRecovery[i] += tacticTotalPT[j][i]
+            ignored_tactics.append(j)
+    ignored_tactics = []
 
             
 print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
