@@ -157,12 +157,14 @@ configurations = {
         "time_to_100_quality": 1, "max_no_employees": 5, "absentism_rate": 15, 
         "employee_cost": 166, "daily_supervision_cost": 16, "contract_cost": 0
     }
-    
-    }
+}
 
 # Crear tácticas
-selected_tactics = ["FTE", "OT", "CT1", "CT2", "CT3", "Temps", "RP1", "RP2"]
+selected_tactics = ["FTE", "OT", "CT1", "CT2", "CT3", "CT4", "Temps", "RP1", "RP2"]
 tactics = [create_tactic(name, configurations[name]) for name in selected_tactics]
+
+num_tactics = len(tactics)
+max_recovery_days = max(tactic["recovery_time_final"] for tactic in tactics)
 
 data = {"backlog": tactics[0]["backlog"], "Daily": tactics[0]["daily_income_work"], "summary": {}, "detail": {}}
 fte_overdemand = 0
@@ -171,6 +173,11 @@ total_cost = 0
 tacticProcTr = [0] * len(tactics)
 tacticTotal = [0] * len(tactics)
 tacticUnit = [0] * len(tactics)
+tacticUnitPT = [[0 for _ in range(max_recovery_days)] for _ in range(num_tactics)]
+tacticTotalPT = [[0 for _ in range(max_recovery_days)] for _ in range(num_tactics)]
+tacticBacklog = [[0 for _ in range(max_recovery_days)] for _ in range(num_tactics)]
+totalPerRecovery = [0] * max_recovery_days
+minUnitCostIndex = 0
 
 for i, tactic in enumerate(tactics):
     tactic_data = {}
@@ -185,25 +192,55 @@ for i, tactic in enumerate(tactics):
         if tactic["name"] == "FTE" and t == tactic["recovery_time_final"]:
             fte_overdemand = result["over_demand"]
             fte_backlog = result["backlog"]
-
+            
+        tacticUnitPT[i][t - 1] = result["unit_cost"]
+        tacticTotalPT[i][t - 1] = result["total_cost"]
+        tacticBacklog[i][t - 1] = result["backlog"]
+        
     tacticProcTr[i] = result["processed_transactions"]
     tacticTotal[i] = result["total_cost"]
-    tacticUnit[i] = result["unit_cost"]
     
     # print(f"Total Cost of {tactic['name']}: {tacticTotal[i]}")
     # print(f"Unit Cost of {tactic['name']}: {tacticUnit[i]}")
     
     data["detail"][tactic["name"]] = tactic_data
+    
+print(f"Total Cost of all tactics: {tacticTotalPT}")
 
-# Calcular la suma total de los costos de todas las tácticas
-total_cost_all_tactics = sum(tacticTotal)
-for i in range(8): ## UNIT MAL IMPRESO
-    print(f"Total de la tactica: {tacticUnit[i]}")
+ignored_tactics = [0]
 
-print(f"Total de los costos de todas las tácticas: {total_cost_all_tactics/100}")
+for i in range(9):
+    if i in ignored_tactics:
+        continue
+    
+    for j in range(max_recovery_days):
+        if tacticUnitPT[i][j] > 0 and i not in ignored_tactics:
+            print(f"Total cost tactica: {tacticTotalPT[i][j]}")
+            ignored_tactics.append(i)
 
-minUnitCostIndex = 0
-tacticTotalSummary = [0] * 8
+for i in range(9):
+    for j in range(max_recovery_days):
+        if j == 6:
+            print(f"Total fsdfsdfd of {tactics[i]['name']} in day {j + 1}: {tacticTotalPT[i][j]}")
+        
+ignored_tactics = [0]
+        
+for i in range(max_recovery_days):  # Iterar sobre los días de recuperación
+    if i == 7:
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+      
+    for j in range(9):  # Iterar sobre las tácticas
+        if j not in ignored_tactics and tacticUnitPT[j][i] > 0:  # Verificar si la táctica no está ignorada y tiene un costo unitario positivo
+            if tacticBacklog[j][i] > 0:
+                totalPerRecovery[i] += tacticTotalPT[j][i]
+    totalPerRecovery[i] += tacticTotalPT[0][i]
+    ignored_tactics = [0]
+
+            
+print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+print(f"Total cost per recovery: {totalPerRecovery}")
+
+tacticTotalSummary = [0] * 9
 # Calcular Total Tactica 1 Summary (FTE)
 tacticTotalSummary[0] = tacticTotal[0]
 
