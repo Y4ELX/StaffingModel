@@ -230,8 +230,10 @@ for i in range(max_recovery_days):  # Iterar sobre los días de recuperación
           
     for j in range(9):  # Iterar sobre las tácticas
         if j not in ignored_tactics and tacticUnitPT[j][i] > 0:  # Verificar si la táctica no está ignorada y tiene un costo unitario positivo
-            if j == 0:
-                if tacticBacklog[j][i] > : #pendienteeeeAAAAAAAAAAAAAAA
+            if j == 0: #pendiente eeeAAAAAAAAAAAAAAA
+                if tacticBacklog[j][i] > (tacticdaily_income_work*recoverytime)+backlog:
+                    totalPerRecovery[i] += tacticTotalPT[j][i]
+                    ignored_tactics.append(j)
             totalPerRecovery[i] += tacticTotalPT[j][i]
             ignored_tactics.append(j)
     ignored_tactics = []
